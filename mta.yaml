@@ -1,0 +1,92 @@
+_schema-version: "3.2"
+ID: managed
+version: 1.0.7
+modules:
+- name: managed-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: managed-destination-service
+    parameters:
+      content-target: true
+  - name: managed_html_repo_host
+    parameters:
+      service-key:
+        name: managed_html_repo_host-key
+  - name: uaa_managed
+    parameters:
+      service-key:
+        name: uaa_managed-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: managedapprouter_managed_html_repo_host
+          ServiceInstanceName: managed-html5-app-host-service
+          ServiceKeyName: managed_html_repo_host-key
+          sap.cloud.service: managedapprouter
+        - Authentication: OAuth2UserTokenExchange
+          Name: managedapprouter_uaa_managed
+          ServiceInstanceName: managed-xsuaa-service
+          ServiceKeyName: uaa_managed-key
+          sap.cloud.service: managedapprouter
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: managed-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: managed_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - ui5webapp.zip
+      name: ui5webapp
+      target-path: resources/
+- name: ui5webapp
+  type: html5
+  path: ui5webapp
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: managed-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: managed-destination-service
+    service-plan: lite
+- name: managed_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: managed-html5-app-host-service
+    service-plan: app-host
+- name: uaa_managed
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: managed-xsuaa-service
+    service-plan: application
+parameters:
+  deploy_mode: html5-repo

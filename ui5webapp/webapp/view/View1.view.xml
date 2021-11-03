@@ -1,0 +1,80 @@
+<mvc:View
+    controllerName="ui5webapp.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m"
+>
+	<Shell id="shell">
+		<App id="app">
+			<pages>
+				<Page id="page" title="Managed App Router">
+					<content> 
+                    	<Table id="idProductsTable"
+		inset="false"
+		items="{
+			path: '/Products',
+			sorter: {
+				path: 'ProductName'
+			}
+		}">
+		
+		<infoToolbar>
+			<OverflowToolbar>
+				<Label text="Wide range of available products"/>
+			</OverflowToolbar>
+		</infoToolbar>
+		<columns>
+			<Column
+				width="12em">
+				<Text text="Product" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				demandPopin="true">
+				<Text text="Supplier" />
+			</Column>
+			<Column
+				minScreenWidth="Desktop"
+				demandPopin="true"
+				hAlign="End">
+				<Text text="Category" />
+			</Column>
+			<Column
+				minScreenWidth="Desktop"
+				demandPopin="true"
+				hAlign="Center">
+				<Text text="QuantityPerUnit" />
+			</Column>
+			<Column
+				hAlign="End">
+				<Text text="UnitPrice" />
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem vAlign="Middle">
+				<cells>
+					<ObjectIdentifier
+						title="{ProductName}"
+						text="{ProductId}"/>
+					<Text
+						text="{SupplierName}" />
+					<Text
+						text="{CategoryID}" />
+	<Text
+						text="{QuantityPerUnit}" />     
+                        	<Text
+						text="{UnitPrice}" />                       
+
+
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+                    
+                    
+                     </content >
+				</Page>
+			</pages>
+		</App>
+	</Shell>
+</mvc:View>
